@@ -14,6 +14,14 @@
       --button-bg: #333;
       --button-active: #444;
     }
+    body.light {
+      --primary-bg: #f3f3f3;
+      --secondary-bg: #ffffff;
+      --text-primary: #000000;
+      --text-secondary: #555555;
+      --button-bg: #e0e0e0;
+      --button-active: #cccccc;
+    }
     * {
       margin: 0;
       padding: 0;
@@ -27,8 +35,9 @@
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      height: 100vh;
+      min-height: 100vh;
       padding: 1rem;
+      transition: background 0.3s ease, color 0.3s ease;
     }
     .calculator {
       background: var(--secondary-bg);
@@ -56,7 +65,7 @@
     }
     button {
       padding: 1rem;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       border: none;
       border-radius: 0.5rem;
       background: var(--button-bg);
@@ -79,6 +88,29 @@
       font-size: 0.9rem;
       max-height: 150px;
       overflow-y: auto;
+    }
+    .toggle-mode {
+      margin-top: 10px;
+      cursor: pointer;
+      background: var(--accent);
+      border: none;
+      color: #000;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: bold;
+    }
+    @media (max-width: 500px) {
+      .calculator {
+        padding: 1rem;
+      }
+      .display {
+        font-size: 1.5rem;
+        padding: 0.75rem;
+      }
+      button {
+        padding: 0.8rem;
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
@@ -130,6 +162,8 @@
     </div>
   </div>
   <div class="history" id="history"></div>
+  <button class="toggle-mode" onclick="toggleMode()">Toggle Light/Dark</button>
+
   <script>
     const display = document.getElementById('display');
     const historyDiv = document.getElementById('history');
@@ -182,6 +216,25 @@
       p.textContent = entry;
       historyDiv.prepend(p);
     }
+
+    function toggleMode() {
+      document.body.classList.toggle('light');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      const key = e.key;
+      if (!isNaN(key) || ['+', '-', '*', '/', '(', ')', '.', '%'].includes(key)) {
+        append(key);
+      } else if (key === 'Enter') {
+        e.preventDefault();
+        calculate();
+      } else if (key === 'Backspace') {
+        deleteLast();
+      } else if (key === 'Escape') {
+        clearDisplay();
+      }
+    });
   </script>
 </body>
 </html>
+
