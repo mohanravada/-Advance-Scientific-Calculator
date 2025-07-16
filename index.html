@@ -1,52 +1,187 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>Calculate me! - A calculator made my me</title>
-  <link href="css/style.css" rel="stylesheet" type="text/css" />
-  <link href="css/utlity.css" rel="stylesheet" type="text/css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Advanced Scientific Calculator</title>
+  <style>
+    :root {
+      --primary-bg: #1e1e1e;
+      --secondary-bg: #2a2a2a;
+      --accent: #00bcd4;
+      --text-primary: #ffffff;
+      --text-secondary: #a6a6a6;
+      --button-bg: #333;
+      --button-active: #444;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      background: var(--primary-bg);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      height: 100vh;
+      padding: 1rem;
+    }
+    .calculator {
+      background: var(--secondary-bg);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    }
+    .display {
+      background: #111;
+      color: var(--text-primary);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      font-size: 2rem;
+      text-align: right;
+      margin-bottom: 1rem;
+      min-height: 3rem;
+      word-wrap: break-word;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+    }
+    button {
+      padding: 1rem;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 0.5rem;
+      background: var(--button-bg);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover {
+      background: var(--button-active);
+    }
+    .operator { background: var(--accent); color: #000; }
+    .span-2 { grid-column: span 2; }
+    .history {
+      width: 100%;
+      max-width: 420px;
+      margin-top: 1rem;
+      background: #2d2d2d;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+  </style>
 </head>
-
 <body>
-  <h1 class="text-center">Welcome to Calculate me!</h1>
-  <div class="container flex flex-col items-center mx-auto m-w-20">
-    <div class="row">
-      <input class="input" type="text"/>
-    </div>
-    <div class="row">
-      <button class="button">C</button>
-      <button class="button">%</button>
-      <button class="button">M+</button>
-      <button class="button">M-</button>
-    </div>
-    <div class="row">
-      <button class="button">7</button>
-      <button class="button">8</button>
-      <button class="button">9</button>
-      <button class="button">*</button>
-    </div>
-    <div class="row">
-      <button class="button">4</button>
-      <button class="button">5</button>
-      <button class="button">6</button>
-      <button class="button">/</button>
-    </div>
-    <div class="row">
-      <button class="button">1</button>
-      <button class="button">2</button>
-      <button class="button">3</button>
-      <button class="button">+</button>
-    </div>
-    <div class="row">
-      <button class="button">0</button>
-      <button class="button">.</button>
-      <button class="button">=</button>
-      <button class="button">-</button>
+  <div class="calculator">
+    <div class="display" id="display">0</div>
+    <div class="buttons">
+      <button onclick="clearDisplay()">AC</button>
+      <button onclick="deleteLast()">DEL</button>
+      <button onclick="append('(')">(</button>
+      <button onclick="append(')')">)</button>
+      <button class="operator" onclick="append('/')">÷</button>
+
+      <button onclick="append('7')">7</button>
+      <button onclick="append('8')">8</button>
+      <button onclick="append('9')">9</button>
+      <button class="operator" onclick="append('*')">×</button>
+      <button class="operator" onclick="append('^')">^</button>
+
+      <button onclick="append('4')">4</button>
+      <button onclick="append('5')">5</button>
+      <button onclick="append('6')">6</button>
+      <button class="operator" onclick="append('-')">−</button>
+      <button onclick="append('sqrt(')">√</button>
+
+      <button onclick="append('1')">1</button>
+      <button onclick="append('2')">2</button>
+      <button onclick="append('3')">3</button>
+      <button class="operator" onclick="append('+')">+</button>
+      <button onclick="append('log(')">log</button>
+
+      <button onclick="append('0')">0</button>
+      <button onclick="append('.')">.</button>
+      <button onclick="append('pi')">π</button>
+      <button onclick="append('e')">e</button>
+      <button onclick="calculate()">=</button>
+
+      <button onclick="append('sin(')">sin</button>
+      <button onclick="append('cos(')">cos</button>
+      <button onclick="append('tan(')">tan</button>
+      <button onclick="append('asin(')">asin</button>
+      <button onclick="append('acos(')">acos</button>
+
+      <button onclick="append('atan(')">atan</button>
+      <button onclick="append('ln(')">ln</button>
+      <button onclick="append('abs(')">|x|</button>
+      <button onclick="append('%')">%</button>
+      <button onclick="append('!')">n!</button>
     </div>
   </div>
-  <script src="javscript/javsscript.js"></script>
-</body>
+  <div class="history" id="history"></div>
+  <script>
+    const display = document.getElementById('display');
+    const historyDiv = document.getElementById('history');
 
+    function append(val) {
+      if (display.innerText === '0') display.innerText = '';
+      display.innerText += val;
+    }
+
+    function clearDisplay() {
+      display.innerText = '0';
+    }
+
+    function deleteLast() {
+      display.innerText = display.innerText.slice(0, -1) || '0';
+    }
+
+    function factorial(n) {
+      if (n < 0) return NaN;
+      return n === 0 ? 1 : n * factorial(n - 1);
+    }
+
+    function calculate() {
+      let expression = display.innerText
+        .replace(/π/g, Math.PI)
+        .replace(/e/g, Math.E)
+        .replace(/sqrt\(/g, 'Math.sqrt(')
+        .replace(/log\(/g, 'Math.log10(')
+        .replace(/ln\(/g, 'Math.log(')
+        .replace(/sin\(/g, 'Math.sin(')
+        .replace(/cos\(/g, 'Math.cos(')
+        .replace(/tan\(/g, 'Math.tan(')
+        .replace(/asin\(/g, 'Math.asin(')
+        .replace(/acos\(/g, 'Math.acos(')
+        .replace(/atan\(/g, 'Math.atan(')
+        .replace(/abs\(/g, 'Math.abs(')
+        .replace(/(\d+)!/g, (_, n) => factorial(Number(n)));
+
+      try {
+        const result = eval(expression);
+        display.innerText = isNaN(result) ? 'Error' : result;
+        logHistory(`${expression.replace(/Math\.(\w+)/g, '$1')} = ${result}`);
+      } catch {
+        display.innerText = 'Error';
+      }
+    }
+
+    function logHistory(entry) {
+      const p = document.createElement('p');
+      p.textContent = entry;
+      historyDiv.prepend(p);
+    }
+  </script>
+</body>
 </html>
